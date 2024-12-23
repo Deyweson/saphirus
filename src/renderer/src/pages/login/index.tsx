@@ -40,6 +40,7 @@ const Login: React.FC = () => {
     const response = await window.iuser.login({ username, password })
     if (response.success) {
       addNotification(response.message, 'success')
+      navigate('/home')
     } else {
       addNotification(response.message, 'error')
     }

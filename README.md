@@ -11,10 +11,11 @@ Saphirus PDV é um sistema completo para a gestão de produtos, controle de esto
 - [x] Conexão com o banco de dados PostgreSQL
 
 ### Autenticação de Usuário
-- [ ] Tela de login
-- [ ] Registro de novos usuários
+- [x] Tela de login
+- [x] Registro de novos usuários
 
 ### Gestão de Produtos
+- [ ] Adicionar Categoria
 - [ ] Listagem de produtos
 - [ ] Adição de novos produtos
 - [ ] Edição de produtos existentes
