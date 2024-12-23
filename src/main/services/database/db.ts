@@ -2,7 +2,7 @@ import Knex from 'knex'
 import { GetDBConfig } from './db-services'
 
 const dbConfig = GetDBConfig()
-export const knex = Knex({
+export const db = Knex({
   client: 'pg',
   connection: {
     host: dbConfig?.host,

@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { IDatabase } from './models/IDatabase'
+import { IUser } from './models/IUser'
 
 // Custom APIs for renderer
 const api = {}
@@ -12,11 +13,19 @@ const idatabase = {
     ipcRenderer.invoke('update-db', data)
 }
 
+const iuser = {
+  register: (data: IUser): Promise<{ success: boolean; message: string }> =>
+    ipcRenderer.invoke('register', data),
+  login: (data: IUser): Promise<{ success: boolean; message: string }> =>
+    ipcRenderer.invoke('login', data)
+}
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('idatabase', idatabase)
+    contextBridge.exposeInMainWorld('iuser', iuser)
   } catch (error) {
     console.error(error)
   }
@@ -27,4 +36,6 @@ if (process.contextIsolated) {
   window.api = api
   // @ts-ignore (define in dts)
   window.idatabase = idatabase
+  // @ts-ignore (define in dts)
+  window.iuser = iuser
 }

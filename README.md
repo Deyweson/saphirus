@@ -1,34 +1,39 @@
-# saphirus
+# Saphirus PDV
 
-An Electron application with React and TypeScript
+## Descrição
 
-## Recommended IDE Setup
+Saphirus PDV é um sistema completo para a gestão de produtos, controle de estoque e vendas. Desenvolvido com tecnologias modernas, este sistema visa facilitar o gerenciamento de pequenas e médias empresas, oferecendo funcionalidades robustas e intuitivas.
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## Funcionalidades
 
-## Project Setup
+### Configuração do Banco de Dados
+- [x] Configuração inicial do banco de dados
+- [x] Conexão com o banco de dados PostgreSQL
 
-### Install
+### Autenticação de Usuário
+- [ ] Tela de login
+- [ ] Registro de novos usuários
 
-```bash
-$ npm install
-```
+### Gestão de Produtos
+- [ ] Listagem de produtos
+- [ ] Adição de novos produtos
+- [ ] Edição de produtos existentes
+- [ ] Remoção de produtos
 
-### Development
+### Controle de Estoque
+- [ ] Registro de entradas e saídas de estoque
+- [ ] Visualização do nível de estoque atual
+- [ ] Alertas de baixo estoque
 
-```bash
-$ npm run dev
-```
+### Registro de Vendas
+- [ ] Registro de vendas diárias
+- [ ] Relatórios de vendas
+- [ ] Histórico de transações
 
-### Build
+## Tecnologias Utilizadas
 
-```bash
-# For windows
-$ npm run build:win
+- **Electron**: Plataforma para criação de aplicações desktop usando JavaScript, HTML e CSS.
+- **React**: Biblioteca JavaScript para construção de interfaces de usuário.
+- **TypeScript**: Superset de JavaScript que adiciona tipagem estática ao idioma.
+- **PostgreSQL**: Sistema de gerenciamento de banco de dados relacional robusto e escalável.
 
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
-```

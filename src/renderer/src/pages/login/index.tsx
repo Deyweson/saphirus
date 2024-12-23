@@ -13,6 +13,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import logo from '../../assets/logo.png'
 import { useNavigate } from 'react-router-dom'
+import { useNotification } from '@renderer/components/notification/NotificationContext'
 
 const theme = createTheme()
 
@@ -20,6 +21,7 @@ const Login: React.FC = () => {
   const [username, setusername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const navigate = useNavigate()
+  const { addNotification } = useNotification()
 
   const handleusernameChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setusername(event.target.value)
@@ -29,11 +31,18 @@ const Login: React.FC = () => {
     setPassword(event.target.value)
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     // Lógica de autenticação aqui
     console.log('username:', username)
     console.log('Password:', password)
+
+    const response = await window.iuser.login({ username, password })
+    if (response.success) {
+      addNotification(response.message, 'success')
+    } else {
+      addNotification(response.message, 'error')
+    }
   }
 
   const handleSettingsClick = (): void => {
