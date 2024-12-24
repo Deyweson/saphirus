@@ -1,9 +1,14 @@
-
 -- Tabela de Usuários
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL
+);
+
+-- Tabela de Categorias
+CREATE TABLE IF NOT EXISTS categories (
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL
 );
 
 -- Tabela de Produtos
@@ -15,7 +20,9 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT,
     img_path TEXT,
     stock_quantity DECIMAL(10, 2) NOT NULL,
-    stock_type VARCHAR(50) CHECK (stock_type IN ('unidade', 'peso')) NOT NULL
+    stock_type VARCHAR(50) CHECK (stock_type IN ('unidade', 'peso')) NOT NULL,
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
 
 -- Tabela de Movimentações de Estoque
