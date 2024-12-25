@@ -18,6 +18,7 @@ import Usuario from './components/usuario'
 import Configuracao from './components/configs'
 
 import logo from '@renderer/assets/logo.png'
+import { Categories } from './components/categorias'
 
 // Logo
 const Logo = (): JSX.Element => (
@@ -40,12 +41,15 @@ const Home: React.FC = () => {
         return <Caixa />
       case 'produtos':
         return <Produtos />
+      case 'categorias':
+        return <Categories />
       case 'estoque':
         return <Estoque />
       case 'usuario':
         return <Usuario />
       case 'configuracao':
         return <Configuracao />
+
       default:
         return <Vender />
     }
@@ -128,10 +132,26 @@ const Home: React.FC = () => {
           </ListItemButton>
 
           <ListItemButton
-            onClick={() => handleMenuClick('estoque', 3)}
+            onClick={() => handleMenuClick('categorias', 3)}
             sx={{
               backgroundColor: selectedIndex === 3 ? 'rgba(0, 0, 255, 0.1)' : 'transparent',
               color: selectedIndex === 3 ? 'blue' : 'black',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 255, 0.1)'
+              }
+            }}
+          >
+            <ListItemIcon>
+              <Inventory />
+            </ListItemIcon>
+            <ListItemText primary="Categorias" />
+          </ListItemButton>
+
+          <ListItemButton
+            onClick={() => handleMenuClick('estoque', 4)}
+            sx={{
+              backgroundColor: selectedIndex === 4 ? 'rgba(0, 0, 255, 0.1)' : 'transparent',
+              color: selectedIndex === 4 ? 'blue' : 'black',
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 255, 0.1)'
               }
@@ -144,10 +164,10 @@ const Home: React.FC = () => {
           </ListItemButton>
 
           <ListItemButton
-            onClick={() => handleMenuClick('usuario', 4)}
+            onClick={() => handleMenuClick('usuario', 5)}
             sx={{
-              backgroundColor: selectedIndex === 4 ? 'rgba(0, 0, 255, 0.1)' : 'transparent',
-              color: selectedIndex === 4 ? 'blue' : 'black',
+              backgroundColor: selectedIndex === 5 ? 'rgba(0, 0, 255, 0.1)' : 'transparent',
+              color: selectedIndex === 5 ? 'blue' : 'black',
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 255, 0.1)'
               }
@@ -160,10 +180,10 @@ const Home: React.FC = () => {
           </ListItemButton>
 
           <ListItemButton
-            onClick={() => handleMenuClick('configuracao', 5)}
+            onClick={() => handleMenuClick('configuracao', 6)}
             sx={{
-              backgroundColor: selectedIndex === 5 ? 'rgba(0, 0, 255, 0.1)' : 'transparent',
-              color: selectedIndex === 5 ? 'blue' : 'black',
+              backgroundColor: selectedIndex === 6 ? 'rgba(0, 0, 255, 0.1)' : 'transparent',
+              color: selectedIndex === 6 ? 'blue' : 'black',
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 255, 0.1)'
               }

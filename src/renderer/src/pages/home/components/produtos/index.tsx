@@ -9,20 +9,17 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Modal,
-  Typography,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel
+  TableRow
 } from '@mui/material'
-import { Search, Add, Close, FolderOpen, Edit, Delete } from '@mui/icons-material'
+import { Search, Add, Edit, Delete } from '@mui/icons-material'
+import { ModalEditProduto } from './modal-edit-produto'
+import { AddProduto } from './modal-add-produto'
+import ConfirmDeleteProductModal from './ConfirmDeleteProductModal'
 
 // Função simulada para trazer produtos do banco de dados
-const fetchProducts = async (searchTerm: string) => {
+const fetchProducts = async (
+  searchTerm: string
+): Promise<{ id: number; name: string; description: string; code: string; price: number }[]> => {
   const allProducts = [
     {
       code: 'P001',
@@ -31,7 +28,9 @@ const fetchProducts = async (searchTerm: string) => {
       price: 10.99,
       stock_quantity: 100,
       stock_type: 'unidade',
-      img_path: '/path/to/img1.jpg'
+      img_path: '/path/to/img1.jpg',
+      id: 1,
+      category_id: 1
     },
     {
       code: 'P002',
@@ -40,7 +39,9 @@ const fetchProducts = async (searchTerm: string) => {
       price: 20.99,
       stock_quantity: 50,
       stock_type: 'peso',
-      img_path: '/path/to/img2.jpg'
+      img_path: '/path/to/img2.jpg',
+      id: 1,
+      category_id: 1
     },
     {
       code: 'P003',
@@ -49,7 +50,9 @@ const fetchProducts = async (searchTerm: string) => {
       price: 15.49,
       stock_quantity: 30,
       stock_type: 'unidade',
-      img_path: '/path/to/img3.jpg'
+      img_path: '/path/to/img3.jpg',
+      id: 1,
+      category_id: 1
     },
     {
       code: 'P004',
@@ -58,7 +61,9 @@ const fetchProducts = async (searchTerm: string) => {
       price: 25.99,
       stock_quantity: 10,
       stock_type: 'peso',
-      img_path: '/path/to/img4.jpg'
+      img_path: '/path/to/img4.jpg',
+      id: 1,
+      category_id: 1
     }
   ]
   return allProducts.filter(
@@ -70,82 +75,50 @@ const fetchProducts = async (searchTerm: string) => {
 }
 
 const Produtos: React.FC = () => {
-  const [products, setProducts] = useState<any[]>([])
+  const [products, setProducts] = useState<
+    { id: number; name: string; description: string; code: string; price: number }[]
+  >([])
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [isModalOpen, setIsModalOpen] = useState(false) // Estado para controlar a visibilidade do modal de adicionar produto
   const [isViewModalOpen, setIsViewModalOpen] = useState(false) // Estado para controlar a visibilidade do modal de visualização
-  const [selectedProduct, setSelectedProduct] = useState<any>(null) // Produto selecionado para visualização e edição
-  const [productData, setProductData] = useState({
-    code: '',
-    name: '',
-    description: '',
-    price: '',
-    stock_quantity: '',
-    stock_type: 'unidade',
-    img_path: ''
-  })
+  const [selectedProductID, setSelectedProductID] = useState<number | undefined>(undefined) // Produto selecionado para visualização e edição
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
 
   // Função para abrir o modal de adicionar produto
-  const openModal = () => {
+  const openModal = (): void => {
     setIsModalOpen(true)
   }
 
   // Função para fechar o modal de adicionar produto
-  const closeModal = () => {
+  const closeModal = (): void => {
     setIsModalOpen(false)
   }
 
   // Função para abrir o modal de visualização e edição
-  const openViewModal = (product: any) => {
-    setSelectedProduct(product)
+  const openViewModal = (id: number): void => {
+    setSelectedProductID(id)
     setIsViewModalOpen(true)
   }
 
   // Função para fechar o modal de visualização e edição
-  const closeViewModal = () => {
+  const closeViewModal = (): void => {
     setIsViewModalOpen(false)
   }
 
   // Função para buscar os produtos
-  const handleSearch = async () => {
+  const handleSearch = async (): Promise<void> => {
     const result = await fetchProducts(searchTerm)
     setProducts(result)
   }
 
-  // Função para registrar o produto
-  const handleRegisterProduct = () => {
-    console.log('Produto registrado:', productData)
-    // Aqui você faria o envio para o servidor ou banco de dados
-    setProductData({
-      code: '',
-      name: '',
-      description: '',
-      price: '',
-      stock_quantity: '',
-      stock_type: 'unidade',
-      img_path: ''
-    })
-    // Não fecha o modal aqui
+  const handleOpenDeleteModal = (id: number): void => {
+    setSelectedProductID(id)
+    setDeleteModalOpen(true)
   }
-
-  // Função para salvar as edições do produto
-  const handleSaveEdits = () => {
-    console.log('Produto editado:', selectedProduct)
-    // Enviar as edições para o servidor ou banco de dados aqui
-    setIsViewModalOpen(false) // Fecha o modal após salvar as edições
-  }
-
-  const handleImagePathChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProductData({ ...productData, img_path: e.target.value })
-  }
-
-  const handleSelectImagePath = () => {
-    // Aqui você implementaria a lógica para selecionar o caminho da imagem
-    alert('Selecione o caminho da imagem!')
-  }
+  const handleCloseDeleteModal = (): void => setDeleteModalOpen(false)
 
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadProducts = async (): Promise<void> => {
       const result = await fetchProducts('')
       setProducts(result)
     }
@@ -225,42 +198,12 @@ const Produtos: React.FC = () => {
                 <TableCell>{product.description}</TableCell>
                 <TableCell>{product.price.toFixed(2)}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<Edit />}
-                    onClick={() => openViewModal(product)}
-                    sx={{
-                      marginRight: '15px',
-                      borderRadius: '4px', // Deixa o botão com bordas quadradas
-                      color: 'blue', // Cor do ícone e texto
-                      borderColor: 'blue', // Cor da borda do botão
-                      '&:hover': {
-                        backgroundColor: 'blue', // Altera o fundo ao passar o mouse
-                        color: 'white' // Cor do texto e ícone ao passar o mouse
-                      }
-                    }}
-                  >
-                    Editar
-                  </Button>
-
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    startIcon={<Delete />}
-                    onClick={() => console.log(product.code)}
-                    sx={{
-                      borderRadius: '4px', // Deixa o botão com bordas quadradas
-                      color: 'red', // Cor do ícone e texto
-                      borderColor: 'red', // Cor da borda do botão
-                      '&:hover': {
-                        backgroundColor: 'red', // Altera o fundo ao passar o mouse
-                        color: 'white' // Cor do texto e ícone ao passar o mouse
-                      }
-                    }}
-                  >
-                    Excluir
-                  </Button>
+                  <IconButton onClick={() => openViewModal(product.id)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => handleOpenDeleteModal(product.id)}>
+                    <Delete />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -269,266 +212,20 @@ const Produtos: React.FC = () => {
       </TableContainer>
 
       {/* Modal para Adicionar Produto */}
-      <Modal
-        open={isModalOpen}
-        onClose={closeModal}
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backdropFilter: 'blur(5px)'
-        }}
-      >
-        <Box
-          sx={{
-            backgroundColor: '#fff',
-            padding: 3,
-            borderRadius: '8px',
-            width: '400px',
-            position: 'relative'
-          }}
-        >
-          <IconButton
-            onClick={closeModal}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              color: 'black'
-            }}
-          >
-            <Close />
-          </IconButton>
-
-          <Typography variant="h6" gutterBottom>
-            Adicionar Produto
-          </Typography>
-
-          {/* Formulário de Produto */}
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="Código"
-                variant="outlined"
-                fullWidth
-                value={productData.code}
-                onChange={(e) => setProductData({ ...productData, code: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Nome"
-                variant="outlined"
-                fullWidth
-                value={productData.name}
-                onChange={(e) => setProductData({ ...productData, name: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Descrição"
-                variant="outlined"
-                fullWidth
-                value={productData.description}
-                onChange={(e) => setProductData({ ...productData, description: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Preço"
-                variant="outlined"
-                fullWidth
-                type="number"
-                value={productData.price}
-                onChange={(e) => setProductData({ ...productData, price: e.target.value })}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">R$</InputAdornment>
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Quantidade em Estoque"
-                variant="outlined"
-                fullWidth
-                type="number"
-                value={productData.stock_quantity}
-                onChange={(e) => setProductData({ ...productData, stock_quantity: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>Tipo de Estoque</InputLabel>
-                <Select
-                  value={productData.stock_type}
-                  onChange={(e) => setProductData({ ...productData, stock_type: e.target.value })}
-                >
-                  <MenuItem value="unidade">Unidade</MenuItem>
-                  <MenuItem value="peso">Peso</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Imagem"
-                variant="outlined"
-                fullWidth
-                value={productData.img_path}
-                onChange={handleImagePathChange}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleSelectImagePath}>
-                        <FolderOpen />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button variant="contained" color="primary" onClick={handleRegisterProduct}>
-                Registrar Produto
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </Modal>
+      <AddProduto closeModal={closeModal} isModalOpen={isModalOpen} />
 
       {/* Modal para Visualizar e Editar Produto */}
-      <Modal
-        open={isViewModalOpen}
-        onClose={closeViewModal}
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backdropFilter: 'blur(5px)'
-        }}
-      >
-        <Box
-          sx={{
-            backgroundColor: '#fff',
-            padding: 3,
-            borderRadius: '8px',
-            width: '400px',
-            position: 'relative'
-          }}
-        >
-          <IconButton
-            onClick={closeViewModal}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              color: 'black'
-            }}
-          >
-            <Close />
-          </IconButton>
+      <ModalEditProduto
+        closeViewModal={closeViewModal}
+        isViewModalOpen={isViewModalOpen}
+        productId={selectedProductID || 0}
+      />
 
-          <Typography variant="h6" gutterBottom>
-            Editar Produto
-          </Typography>
-
-          {/* Formulário de Edição */}
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="Código"
-                variant="outlined"
-                fullWidth
-                value={selectedProduct?.code}
-                onChange={(e) => setSelectedProduct({ ...selectedProduct, code: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Nome"
-                variant="outlined"
-                fullWidth
-                value={selectedProduct?.name}
-                onChange={(e) => setSelectedProduct({ ...selectedProduct, name: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Descrição"
-                variant="outlined"
-                fullWidth
-                value={selectedProduct?.description}
-                onChange={(e) =>
-                  setSelectedProduct({ ...selectedProduct, description: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Preço"
-                variant="outlined"
-                fullWidth
-                type="number"
-                value={selectedProduct?.price}
-                onChange={(e) => setSelectedProduct({ ...selectedProduct, price: e.target.value })}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">R$</InputAdornment>
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Quantidade em Estoque"
-                variant="outlined"
-                fullWidth
-                type="number"
-                value={selectedProduct?.stock_quantity}
-                onChange={(e) =>
-                  setSelectedProduct({ ...selectedProduct, stock_quantity: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>Tipo de Estoque</InputLabel>
-                <Select
-                  value={selectedProduct?.stock_type}
-                  onChange={(e) =>
-                    setSelectedProduct({ ...selectedProduct, stock_type: e.target.value })
-                  }
-                >
-                  <MenuItem value="unidade">Unidade</MenuItem>
-                  <MenuItem value="peso">Peso</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Imagem"
-                variant="outlined"
-                fullWidth
-                value={selectedProduct?.img_path}
-                onChange={(e) =>
-                  setSelectedProduct({ ...selectedProduct, img_path: e.target.value })
-                }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleSelectImagePath}>
-                        <FolderOpen />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button variant="contained" color="primary" onClick={handleSaveEdits}>
-                Salvar Edições
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </Modal>
+      <ConfirmDeleteProductModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        productId={selectedProductID || 0}
+      />
     </Box>
   )
 }
