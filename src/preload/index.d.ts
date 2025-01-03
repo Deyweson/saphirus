@@ -13,6 +13,11 @@ interface LoginScreen {
   checkUsers: () => Promise<{ success: boolean; data: number | null; message: string }>
 }
 
+interface Categories {
+  addCategorie: (description: string) => Promise<{ success: boolean; message: string }>
+  getCategories: () => Promise<{ success: boolean; message: string }>
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -20,5 +25,6 @@ declare global {
     idatabase: idatabase
     iuser: iuser
     LoginScreen: LoginScreen
+    Categories: Categories
   }
 }

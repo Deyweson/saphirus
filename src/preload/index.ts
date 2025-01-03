@@ -22,12 +22,20 @@ const LoginScreen = {
     ipcRenderer.invoke('register', data)
 }
 
+const Categories = {
+  addCategorie: (description: string): Promise<{ success: boolean; message: string }> =>
+    ipcRenderer.invoke('add-categorie', description),
+  getCategories: (): Promise<{ success: boolean; message: string }> =>
+    ipcRenderer.invoke('get-categories')
+}
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('idatabase', idatabase)
     contextBridge.exposeInMainWorld('LoginScreen', LoginScreen)
+    contextBridge.exposeInMainWorld('Categories', Categories)
   } catch (error) {
     console.error(error)
   }
@@ -42,4 +50,6 @@ if (process.contextIsolated) {
   window.iuser = iuser
   // @ts-ignore (define in dts)
   window.LoginScreen = LoginScreen
+  // @ts-ignore (define in dts)
+  window.Categories = Categories
 }

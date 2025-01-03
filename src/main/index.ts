@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import { database } from './services/database'
 import { initializeDBConfig } from './services/database/db-services'
 import { LoginScreen } from './services/1-login'
+import { Categories } from './services/2-categories'
 
 function createWindow(): void {
   // Create the browser window.
@@ -55,6 +56,7 @@ app.whenReady().then(() => {
   initializeDBConfig()
   database()
   LoginScreen()
+  Categories()
   createWindow()
 
   app.on('activate', function () {
