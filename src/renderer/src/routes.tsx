@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
-import Login from './pages/login'
 import LoginSettings from './pages/login-settings'
 import Home from './pages/home'
+import Login from './pages/1-login'
 
 export function MainRoutes(): JSX.Element {
   return (

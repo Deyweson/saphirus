@@ -1,15 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react'
-import {
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Box,
-  CssBaseline,
-  Paper,
-  IconButton
-} from '@mui/material'
-import SettingsIcon from '@mui/icons-material/Settings'
+import { Container, TextField, Button, Typography, Box, CssBaseline, Paper } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import logo from '../../assets/logo.png'
 import { useNavigate } from 'react-router-dom'
@@ -17,7 +7,7 @@ import { useNotification } from '@renderer/components/notification/NotificationC
 
 const theme = createTheme()
 
-const Login: React.FC = () => {
+const LoginForm: React.FC = () => {
   const [username, setusername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const navigate = useNavigate()
@@ -33,21 +23,14 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
-    // Lógica de autenticação aqui
-    console.log('username:', username)
-    console.log('Password:', password)
 
-    const response = await window.iuser.login({ username, password })
+    const response = await window.LoginScreen.login({ username, password })
     if (response.success) {
       addNotification(response.message, 'success')
       navigate('/home')
     } else {
       addNotification(response.message, 'error')
     }
-  }
-
-  const handleSettingsClick = (): void => {
-    navigate('/login-settings')
   }
 
   return (
@@ -58,7 +41,7 @@ const Login: React.FC = () => {
         sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <CssBaseline />
-        <Paper elevation={3} sx={{ padding: 3 }}>
+        <Paper elevation={3} sx={{ padding: 3, boxShadow: 'none', border: 'none' }}>
           <Box
             sx={{
               display: 'flex',
@@ -66,11 +49,7 @@ const Login: React.FC = () => {
               alignItems: 'center'
             }}
           >
-            <Box
-              component="img"
-              src={logo}
-              sx={{ width: '50%', height: 'auto', mb: 2 }} // Ajuste de tamanho do logo
-            />
+            <Box component="img" src={logo} sx={{ width: '50%', height: 'auto', mb: 2 }} />
             <Typography component="h1" variant="h5">
               Login
             </Typography>
@@ -106,11 +85,8 @@ const Login: React.FC = () => {
           </Box>
         </Paper>
       </Container>
-      <IconButton sx={{ position: 'fixed', bottom: 16, right: 16 }} onClick={handleSettingsClick}>
-        <SettingsIcon />
-      </IconButton>
     </ThemeProvider>
   )
 }
 
-export default Login
+export default LoginForm

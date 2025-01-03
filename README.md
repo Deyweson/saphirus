@@ -6,30 +6,8 @@ Saphirus PDV é um sistema completo para a gestão de produtos, controle de esto
 
 ## Funcionalidades
 
-### Configuração do Banco de Dados
-- [x] Configuração inicial do banco de dados
-- [x] Conexão com o banco de dados PostgreSQL
-
-### Autenticação de Usuário
-- [x] Tela de login
-- [x] Registro de novos usuários
-
-### Gestão de Produtos
-- [ ] Adicionar Categoria
-- [ ] Listagem de produtos
-- [ ] Adição de novos produtos
-- [ ] Edição de produtos existentes
-- [ ] Remoção de produtos
-
-### Controle de Estoque
-- [ ] Registro de entradas e saídas de estoque
-- [ ] Visualização do nível de estoque atual
-- [ ] Alertas de baixo estoque
-
-### Registro de Vendas
-- [ ] Registro de vendas diárias
-- [ ] Relatórios de vendas
-- [ ] Histórico de transações
+### Sistema de Login
+A tela inicial do sistema é a tela de login. Aonde o usuário pode fazer seu login, caso seja a primeira vez e não tenha nenhum usuário ja cadastrado, o sistema lhe mostrara um modal para criar seu primeiro usuário
 
 ## Tecnologias Utilizadas
 

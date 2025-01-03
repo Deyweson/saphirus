@@ -13,11 +13,13 @@ const idatabase = {
     ipcRenderer.invoke('update-db', data)
 }
 
-const iuser = {
-  register: (data: IUser): Promise<{ success: boolean; message: string }> =>
-    ipcRenderer.invoke('register', data),
+const LoginScreen = {
   login: (data: IUser): Promise<{ success: boolean; message: string }> =>
-    ipcRenderer.invoke('login', data)
+    ipcRenderer.invoke('login', data),
+  checkUsers: (): Promise<{ success: boolean; data: number | null; message: string }> =>
+    ipcRenderer.invoke('check-users'),
+  register: (data: IUser): Promise<{ success: boolean; message: string }> =>
+    ipcRenderer.invoke('register', data)
 }
 
 if (process.contextIsolated) {
@@ -25,7 +27,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('idatabase', idatabase)
-    contextBridge.exposeInMainWorld('iuser', iuser)
+    contextBridge.exposeInMainWorld('LoginScreen', LoginScreen)
   } catch (error) {
     console.error(error)
   }
@@ -38,4 +40,6 @@ if (process.contextIsolated) {
   window.idatabase = idatabase
   // @ts-ignore (define in dts)
   window.iuser = iuser
+  // @ts-ignore (define in dts)
+  window.LoginScreen = LoginScreen
 }

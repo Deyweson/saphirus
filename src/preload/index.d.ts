@@ -7,9 +7,10 @@ interface idatabase {
   UpdateDB: (data: IDatabase) => Promise<{ success: boolean; message: string }>
 }
 
-interface iuser {
+interface LoginScreen {
   register: (data: IUser) => Promise<{ success: boolean; message: string }>
   login: (data: IUser) => Promise<{ success: boolean; message: string }>
+  checkUsers: () => Promise<{ success: boolean; data: number | null; message: string }>
 }
 
 declare global {
@@ -18,5 +19,6 @@ declare global {
     api: unknown
     idatabase: idatabase
     iuser: iuser
+    LoginScreen: LoginScreen
   }
 }
