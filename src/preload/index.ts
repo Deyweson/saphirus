@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { IDatabase } from './models/IDatabase'
 import { IUser } from './models/IUser'
+import { ICategorie } from './models/ICategorie'
 
 // Custom APIs for renderer
 const api = {}
@@ -25,7 +26,7 @@ const LoginScreen = {
 const Categories = {
   addCategorie: (description: string): Promise<{ success: boolean; message: string }> =>
     ipcRenderer.invoke('add-categorie', description),
-  getCategories: (): Promise<{ success: boolean; message: string }> =>
+  getCategories: (): Promise<{ success: boolean; data: ICategorie[]; message: string }> =>
     ipcRenderer.invoke('get-categories')
 }
 

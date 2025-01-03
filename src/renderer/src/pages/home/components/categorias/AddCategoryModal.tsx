@@ -1,5 +1,6 @@
 import { Close } from '@mui/icons-material'
 import { Box, Button, IconButton, Modal, TextField, Typography } from '@mui/material'
+import { useNotification } from '@renderer/components/notification/NotificationContext'
 import React, { useState } from 'react'
 
 interface AddCategoryModalProps {
@@ -9,11 +10,17 @@ interface AddCategoryModalProps {
 
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, onClose }) => {
   const [categoryName, setCategoryName] = useState('')
+  const { addNotification } = useNotification()
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async (): Promise<void> => {
     console.log('Categoria adicionada:', categoryName)
-    setCategoryName('')
-    onClose()
+    const response = await window.Categories.addCategorie(categoryName)
+    if (response.success) {
+      setCategoryName('')
+      addNotification(response.message, 'success')
+    } else {
+      addNotification(response.message, 'success')
+    }
   }
 
   return (

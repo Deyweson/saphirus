@@ -2,7 +2,6 @@ import { Add, Delete, Edit, Search } from '@mui/icons-material'
 import {
   Box,
   Button,
-  Grid,
   IconButton,
   InputAdornment,
   Table,
@@ -11,54 +10,55 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import AddCategoryModal from './AddCategoryModal'
 import EditCategoryModal from './EditCategoryModal'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
+import { useNotification } from '@renderer/components/notification/NotificationContext'
 
 interface Category {
   id: number
   description: string
 }
 
-export function Categories() {
+export function Categories(): JSX.Element {
   const [categories, setCategories] = useState<Category[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddModalOpen, setAddModalOpen] = useState(false)
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
+  const { addNotification } = useNotification()
 
   useEffect(() => {
     fetchCategories()
-  }, [])
+  }, [isAddModalOpen, isEditModalOpen, isDeleteModalOpen])
 
-  const fetchCategories = () => {
-    const mockCategories = [
-      { id: 1, description: 'Categoria 1' },
-      { id: 2, description: 'Categoria 2' },
-      { id: 3, description: 'Categoria 3' }
-    ]
-    setCategories(mockCategories)
+  const fetchCategories = async (): Promise<void> => {
+    const response = await window.Categories.getCategories()
+    if (response.success) {
+      setCategories(response.data)
+    } else {
+      addNotification(response.message)
+    }
   }
 
-  const handleOpenAddModal = () => setAddModalOpen(true)
-  const handleCloseAddModal = () => setAddModalOpen(false)
+  const handleOpenAddModal = (): void => setAddModalOpen(true)
+  const handleCloseAddModal = (): void => setAddModalOpen(false)
 
-  const handleOpenEditModal = (id: number) => {
+  const handleOpenEditModal = (id: number): void => {
     setSelectedCategoryId(id)
     setEditModalOpen(true)
   }
-  const handleCloseEditModal = () => setEditModalOpen(false)
+  const handleCloseEditModal = (): void => setEditModalOpen(false)
 
-  const handleOpenDeleteModal = (id: number) => {
+  const handleOpenDeleteModal = (id: number): void => {
     setSelectedCategoryId(id)
     setDeleteModalOpen(true)
   }
-  const handleCloseDeleteModal = () => setDeleteModalOpen(false)
+  const handleCloseDeleteModal = (): void => setDeleteModalOpen(false)
 
   const filteredCategories = categories.filter((category) =>
     category.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -80,7 +80,6 @@ export function Categories() {
         margin: '0 auto'
       }}
     >
-      {/* Barra de Pesquisa e Botão de Adicionar Categoria */}
       <Box
         sx={{
           display: 'flex',
@@ -90,7 +89,6 @@ export function Categories() {
           alignItems: 'center'
         }}
       >
-        {/* Barra de Pesquisa */}
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <TextField
             label="Pesquisar categorias"
@@ -109,7 +107,6 @@ export function Categories() {
           />
         </Box>
 
-        {/* Botão Adicionar Categoria */}
         <Button
           variant="contained"
           color="primary"
@@ -121,7 +118,6 @@ export function Categories() {
         </Button>
       </Box>
 
-      {/* Tabela de Categorias */}
       <TableContainer sx={{ width: '100%' }}>
         <Table>
           <TableHead>

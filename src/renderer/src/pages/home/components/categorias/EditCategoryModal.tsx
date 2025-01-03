@@ -17,13 +17,13 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, onClose, 
     }
   }, [categoryId])
 
-  const fetchCategoryDetails = (id: number) => {
+  const fetchCategoryDetails = (id: number): void => {
     // Mock data para detalhes da categoria
     const categoryDetails = { id, description: `Categoria ${id}` }
     setCategoryName(categoryDetails.description)
   }
 
-  const handleSaveCategory = () => {
+  const handleSaveCategory = (): void => {
     console.log('Categoria salva:', categoryId, categoryName)
     onClose()
   }

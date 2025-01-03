@@ -1,6 +1,7 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 import { IDatabase } from './models/IDatabase'
 import { IUser } from './models/IUser'
+import { ICategorie } from './models/ICategorie'
 
 interface idatabase {
   GetDB: () => Promise<{ success: boolean; data: IDatabase; message: string }>
@@ -15,7 +16,7 @@ interface LoginScreen {
 
 interface Categories {
   addCategorie: (description: string) => Promise<{ success: boolean; message: string }>
-  getCategories: () => Promise<{ success: boolean; message: string }>
+  getCategories: () => Promise<{ success: boolean; data: ICategorie[]; message: string }>
 }
 
 declare global {

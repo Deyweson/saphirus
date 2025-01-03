@@ -9,7 +9,7 @@ interface ConfirmDeleteModalProps {
 }
 
 const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ isOpen, onClose, categoryId }) => {
-  const handleDeleteCategory = () => {
+  const handleDeleteCategory = (): void => {
     console.log('Categoria excluída:', categoryId)
     onClose()
   }
