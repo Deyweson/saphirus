@@ -17,6 +17,11 @@ interface LoginScreen {
 interface Categories {
   addCategorie: (description: string) => Promise<{ success: boolean; message: string }>
   getCategories: () => Promise<{ success: boolean; data: ICategorie[]; message: string }>
+  getCategorieById: (id: number) => Promise<{ success: boolean; data: ICategorie; message: string }>
+  editCategorie: (
+    categorie: ICategorie
+  ) => Promise<{ success: boolean; data: ICategorie[]; message: string }>
+  deleteCategorie: (id: number) => Promise<{ success: boolean; message: string }>
 }
 
 declare global {

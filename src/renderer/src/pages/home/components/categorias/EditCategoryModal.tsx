@@ -1,31 +1,46 @@
 import { Close } from '@mui/icons-material'
 import { Box, Button, IconButton, Modal, TextField, Typography } from '@mui/material'
+import { useNotification } from '@renderer/components/notification/NotificationContext'
 import React, { useState, useEffect } from 'react'
 
 interface EditCategoryModalProps {
   isOpen: boolean
   onClose: () => void
-  categoryId: number | null
+  categoryId: number
 }
 
 const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, onClose, categoryId }) => {
   const [categoryName, setCategoryName] = useState('')
+  const { addNotification } = useNotification()
 
   useEffect(() => {
     if (categoryId !== null) {
-      fetchCategoryDetails(categoryId)
+      fetchCategoryDetails()
     }
   }, [categoryId])
 
-  const fetchCategoryDetails = (id: number): void => {
-    // Mock data para detalhes da categoria
-    const categoryDetails = { id, description: `Categoria ${id}` }
-    setCategoryName(categoryDetails.description)
+  const fetchCategoryDetails = async (): Promise<void> => {
+    const response = await window.Categories.getCategorieById(categoryId)
+    if (response.success) {
+      setCategoryName(response.data.description)
+    } else {
+      addNotification(response.message)
+      onClose()
+    }
   }
 
-  const handleSaveCategory = (): void => {
-    console.log('Categoria salva:', categoryId, categoryName)
-    onClose()
+  const handleSaveCategory = async (): Promise<void> => {
+    const response = await window.Categories.editCategorie({
+      id: categoryId,
+      description: categoryName
+    })
+
+    if (response.success) {
+      addNotification(response.message)
+      onClose()
+    } else {
+      addNotification(response.message)
+    }
   }
 
   return (

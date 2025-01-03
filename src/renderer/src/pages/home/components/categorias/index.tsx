@@ -29,7 +29,7 @@ export function Categories(): JSX.Element {
   const [isAddModalOpen, setAddModalOpen] = useState(false)
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0)
   const { addNotification } = useNotification()
 
   useEffect(() => {

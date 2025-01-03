@@ -27,7 +27,17 @@ const Categories = {
   addCategorie: (description: string): Promise<{ success: boolean; message: string }> =>
     ipcRenderer.invoke('add-categorie', description),
   getCategories: (): Promise<{ success: boolean; data: ICategorie[]; message: string }> =>
-    ipcRenderer.invoke('get-categories')
+    ipcRenderer.invoke('get-categories'),
+  getCategorieById: (
+    id: number
+  ): Promise<{ success: boolean; data: ICategorie; message: string }> =>
+    ipcRenderer.invoke('get-categorie-by-id', id),
+  editCategorie: (
+    categorie: ICategorie
+  ): Promise<{ success: boolean; data: ICategorie; message: string }> =>
+    ipcRenderer.invoke('edit-categorie', categorie),
+  deleteCategorie: (id: number): Promise<{ success: boolean; message: string }> =>
+    ipcRenderer.invoke('delete-categorie', id)
 }
 
 if (process.contextIsolated) {

@@ -1,5 +1,6 @@
 import { Close } from '@mui/icons-material'
 import { Box, Button, IconButton, Modal, Typography } from '@mui/material'
+import { useNotification } from '@renderer/components/notification/NotificationContext'
 import React from 'react'
 
 interface ConfirmDeleteModalProps {
@@ -9,9 +10,17 @@ interface ConfirmDeleteModalProps {
 }
 
 const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ isOpen, onClose, categoryId }) => {
-  const handleDeleteCategory = (): void => {
+  const { addNotification } = useNotification()
+
+  const handleDeleteCategory = async (): Promise<void> => {
     console.log('Categoria excluída:', categoryId)
-    onClose()
+    const response = await window.Categories.deleteCategorie(Number(categoryId))
+    if (response.success) {
+      addNotification(response.message)
+      onClose()
+    } else {
+      addNotification(response.message)
+    }
   }
 
   return (
