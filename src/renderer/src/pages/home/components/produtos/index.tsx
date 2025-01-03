@@ -15,74 +15,45 @@ import { Search, Add, Edit, Delete } from '@mui/icons-material'
 import { ModalEditProduto } from './modal-edit-produto'
 import { AddProduto } from './modal-add-produto'
 import ConfirmDeleteProductModal from './ConfirmDeleteProductModal'
+import { useNotification } from '@renderer/components/notification/NotificationContext'
 
-// Função simulada para trazer produtos do banco de dados
-const fetchProducts = async (
-  searchTerm: string
-): Promise<{ id: number; name: string; description: string; code: string; price: number }[]> => {
-  const allProducts = [
-    {
-      code: 'P001',
-      name: 'Produto 1',
-      description: 'Descrição do produto 1',
-      price: 10.99,
-      stock_quantity: 100,
-      stock_type: 'unidade',
-      img_path: '/path/to/img1.jpg',
-      id: 1,
-      category_id: 1
-    },
-    {
-      code: 'P002',
-      name: 'Produto 2',
-      description: 'Descrição do produto 2',
-      price: 20.99,
-      stock_quantity: 50,
-      stock_type: 'peso',
-      img_path: '/path/to/img2.jpg',
-      id: 1,
-      category_id: 1
-    },
-    {
-      code: 'P003',
-      name: 'Produto 3',
-      description: 'Descrição do produto 3',
-      price: 15.49,
-      stock_quantity: 30,
-      stock_type: 'unidade',
-      img_path: '/path/to/img3.jpg',
-      id: 1,
-      category_id: 1
-    },
-    {
-      code: 'P004',
-      name: 'Produto 4',
-      description: 'Descrição do produto 4',
-      price: 25.99,
-      stock_quantity: 10,
-      stock_type: 'peso',
-      img_path: '/path/to/img4.jpg',
-      id: 1,
-      category_id: 1
-    }
-  ]
-  return allProducts.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.code.toLowerCase().includes(searchTerm.toLowerCase()) // Inclusão do código na pesquisa
-  )
+interface IProduct {
+  id: number
+  code: string
+  name: string
+  price: number
+  img_path: string
+  stock_type: string
+  category_id: number
 }
 
 const Produtos: React.FC = () => {
-  const [products, setProducts] = useState<
-    { id: number; name: string; description: string; code: string; price: number }[]
-  >([])
+  const [products, setProducts] = useState<IProduct[]>([])
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [isModalOpen, setIsModalOpen] = useState(false) // Estado para controlar a visibilidade do modal de adicionar produto
   const [isViewModalOpen, setIsViewModalOpen] = useState(false) // Estado para controlar a visibilidade do modal de visualização
   const [selectedProductID, setSelectedProductID] = useState<number | undefined>(undefined) // Produto selecionado para visualização e edição
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [categories, setCategories] = useState<{ [key: number]: string }>({})
+  const { addNotification } = useNotification()
+
+  const loadCategories = async (products: IProduct[]): Promise<void> => {
+    const categoryMap: { [key: number]: string } = {}
+
+    for (const product of products) {
+      if (!categoryMap[product.category_id]) {
+        // Evita buscar categorias repetidas
+        const response = await window.Categories.getCategorieById(product.category_id)
+        if (response.success) {
+          categoryMap[product.category_id] = response.data.description
+        } else {
+          categoryMap[product.category_id] = 'Desconhecida'
+        }
+      }
+    }
+
+    setCategories(categoryMap) // Atualiza o estado com as categorias carregadas
+  }
 
   // Função para abrir o modal de adicionar produto
   const openModal = (): void => {
@@ -106,10 +77,10 @@ const Produtos: React.FC = () => {
   }
 
   // Função para buscar os produtos
-  const handleSearch = async (): Promise<void> => {
-    const result = await fetchProducts(searchTerm)
-    setProducts(result)
-  }
+  // const handleSearch = async (): Promise<void> => {
+  //   const result = await fetchProducts(searchTerm)
+  //   setProducts(result)
+  // }
 
   const handleOpenDeleteModal = (id: number): void => {
     setSelectedProductID(id)
@@ -119,8 +90,13 @@ const Produtos: React.FC = () => {
 
   useEffect(() => {
     const loadProducts = async (): Promise<void> => {
-      const result = await fetchProducts('')
-      setProducts(result)
+      const response = await window.Products.getProducts()
+      if (response.success) {
+        setProducts(response.data)
+        loadCategories(response.data)
+      } else {
+        addNotification(response.message)
+      }
     }
     loadProducts()
   }, [])
@@ -161,7 +137,7 @@ const Produtos: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ maxWidth: '500px' }}
           />
-          <IconButton onClick={handleSearch} sx={{ marginLeft: 1 }}>
+          <IconButton onClick={() => console.log('teste')} sx={{ marginLeft: 1 }}>
             <Search />
           </IconButton>
         </Box>
@@ -185,7 +161,7 @@ const Produtos: React.FC = () => {
             <TableRow>
               <TableCell>Código</TableCell>
               <TableCell>Nome</TableCell>
-              <TableCell>Descrição</TableCell>
+              <TableCell>Categoria</TableCell>
               <TableCell>Preço</TableCell>
               <TableCell>Ações</TableCell>
             </TableRow>
@@ -195,8 +171,8 @@ const Produtos: React.FC = () => {
               <TableRow key={product.code}>
                 <TableCell>{product.code}</TableCell>
                 <TableCell>{product.name}</TableCell>
-                <TableCell>{product.description}</TableCell>
-                <TableCell>{product.price.toFixed(2)}</TableCell>
+                <TableCell>{categories[product.category_id] || 'Carregando...'}</TableCell>
+                <TableCell>{product.price}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => openViewModal(product.id)}>
                     <Edit />

@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { IDatabase } from './models/IDatabase'
 import { IUser } from './models/IUser'
 import { ICategorie } from './models/ICategorie'
+import { IProduct } from './models/IProduct'
 
 // Custom APIs for renderer
 const api = {}
@@ -40,6 +41,11 @@ const Categories = {
     ipcRenderer.invoke('delete-categorie', id)
 }
 
+const Products = {
+  getProducts: (): Promise<{ success: boolean; data: IProduct[]; message: string }> =>
+    ipcRenderer.invoke('get-products')
+}
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
@@ -47,6 +53,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('idatabase', idatabase)
     contextBridge.exposeInMainWorld('LoginScreen', LoginScreen)
     contextBridge.exposeInMainWorld('Categories', Categories)
+    contextBridge.exposeInMainWorld('Products', Products)
   } catch (error) {
     console.error(error)
   }
@@ -63,4 +70,6 @@ if (process.contextIsolated) {
   window.LoginScreen = LoginScreen
   // @ts-ignore (define in dts)
   window.Categories = Categories
+  // @ts-ignore (define in dts)
+  window.Products = Products
 }

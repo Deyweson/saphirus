@@ -2,6 +2,7 @@ import { ElectronAPI } from '@electron-toolkit/preload'
 import { IDatabase } from './models/IDatabase'
 import { IUser } from './models/IUser'
 import { ICategorie } from './models/ICategorie'
+import { IProduct } from './models/IProduct'
 
 interface idatabase {
   GetDB: () => Promise<{ success: boolean; data: IDatabase; message: string }>
@@ -24,6 +25,10 @@ interface Categories {
   deleteCategorie: (id: number) => Promise<{ success: boolean; message: string }>
 }
 
+interface Products {
+  getProducts: () => Promise<{ success: boolean; data: IProduct[]; message: string }>
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -32,5 +37,6 @@ declare global {
     iuser: iuser
     LoginScreen: LoginScreen
     Categories: Categories
+    Products: Products
   }
 }
