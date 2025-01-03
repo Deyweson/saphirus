@@ -6,6 +6,7 @@ import { database } from './services/database'
 import { initializeDBConfig } from './services/database/db-services'
 import { LoginScreen } from './services/1-login'
 import { Categories } from './services/2-categories'
+import { Products } from './services/3-Produtos'
 
 function createWindow(): void {
   // Create the browser window.
@@ -57,6 +58,7 @@ app.whenReady().then(() => {
   database()
   LoginScreen()
   Categories()
+  Products()
   createWindow()
 
   app.on('activate', function () {

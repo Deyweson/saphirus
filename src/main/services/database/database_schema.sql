@@ -17,9 +17,7 @@ CREATE TABLE IF NOT EXISTS products (
     code VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    description TEXT,
     img_path TEXT,
-    stock_quantity DECIMAL(10, 2) NOT NULL,
     stock_type VARCHAR(50) CHECK (stock_type IN ('unidade', 'peso')) NOT NULL,
     category_id INT,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
