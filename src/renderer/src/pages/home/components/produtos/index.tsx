@@ -18,7 +18,7 @@ import ConfirmDeleteProductModal from './ConfirmDeleteProductModal'
 import { useNotification } from '@renderer/components/notification/NotificationContext'
 
 interface IProduct {
-  id: number
+  id?: number
   code: string
   name: string
   price: number
@@ -45,6 +45,7 @@ const Produtos: React.FC = () => {
         // Evita buscar categorias repetidas
         const response = await window.Categories.getCategorieById(product.category_id)
         if (response.success) {
+          console.log('Aqui')
           categoryMap[product.category_id] = response.data.description
         } else {
           categoryMap[product.category_id] = 'Desconhecida'
@@ -53,6 +54,7 @@ const Produtos: React.FC = () => {
     }
 
     setCategories(categoryMap) // Atualiza o estado com as categorias carregadas
+    console.log(categories, 'here')
   }
 
   // Função para abrir o modal de adicionar produto
@@ -174,10 +176,10 @@ const Produtos: React.FC = () => {
                 <TableCell>{categories[product.category_id] || 'Carregando...'}</TableCell>
                 <TableCell>{product.price}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => openViewModal(product.id)}>
+                  <IconButton onClick={() => openViewModal(product.id || 0)}>
                     <Edit />
                   </IconButton>
-                  <IconButton onClick={() => handleOpenDeleteModal(product.id)}>
+                  <IconButton onClick={() => handleOpenDeleteModal(product.id || 0)}>
                     <Delete />
                   </IconButton>
                 </TableCell>

@@ -16,15 +16,15 @@ import {
   Typography
 } from '@mui/material'
 import { useNotification } from '@renderer/components/notification/NotificationContext'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import produtcPlaceholder from '@renderer/assets/product-placeholder.png'
 
 interface ProductData {
   code: string
   name: string
-  price: string
+  price: number
   stock_type: string
-  category: string
+  category_id: number // Alterado para number
   img_path: string
 }
 
@@ -43,13 +43,14 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
   const [productData, setProductData] = useState<ProductData>({
     code: '',
     name: '',
-    price: '',
+    price: 0,
     stock_type: 'unidade',
-    category: '',
+    category_id: 0, // Inicializado com 0
     img_path: ''
   })
 
   const [categories, setCategories] = useState<Categories[]>([])
+  const [errors, setErrors] = useState<{ [key in keyof ProductData]?: string }>({})
 
   useEffect(() => {
     fetchCategories()
@@ -65,17 +66,35 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
     }
   }
 
+  const validateFields = (): boolean => {
+    const newErrors: { [key in keyof ProductData]?: string } = {}
+    if (!productData.code) newErrors.code = 'O código é obrigatório'
+    if (!productData.name) newErrors.name = 'O nome é obrigatório'
+    if (productData.price <= 0 || isNaN(productData.price))
+      newErrors.price = 'O preço deve ser um número válido'
+    if (productData.category_id === 0) newErrors.category_id = 'A categoria é obrigatória'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   // Função para registrar o produto
-  const handleRegisterProduct = (): void => {
-    console.log('Produto registrado:', productData)
-    setProductData({
-      code: '',
-      name: '',
-      price: '',
-      stock_type: 'unidade',
-      category: '',
-      img_path: ''
-    })
+  const handleRegisterProduct = async (): Promise<void> => {
+    if (!validateFields()) return
+
+    const response = await window.Products.addProduct(productData)
+    if (response.success) {
+      setProductData({
+        code: '',
+        name: '',
+        price: 0,
+        stock_type: 'unidade',
+        category_id: 0, // Resetado para 0
+        img_path: ''
+      })
+      setErrors({})
+    } else {
+      addNotification(response.message)
+    }
   }
 
   const handleSelectImagePath = async (): Promise<void> => {
@@ -130,6 +149,8 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
               fullWidth
               value={productData.code}
               onChange={(e) => setProductData({ ...productData, code: e.target.value })}
+              error={!!errors.code}
+              helperText={errors.code}
             />
           </Grid>
           <Grid item xs={12}>
@@ -139,6 +160,8 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
               fullWidth
               value={productData.name}
               onChange={(e) => setProductData({ ...productData, name: e.target.value })}
+              error={!!errors.name}
+              helperText={errors.name}
             />
           </Grid>
           <Grid item xs={12}>
@@ -148,10 +171,12 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
               fullWidth
               type="number"
               value={productData.price}
-              onChange={(e) => setProductData({ ...productData, price: e.target.value })}
+              onChange={(e) => setProductData({ ...productData, price: Number(e.target.value) })}
               InputProps={{
                 startAdornment: <InputAdornment position="start">R$</InputAdornment>
               }}
+              error={!!errors.price}
+              helperText={errors.price}
             />
           </Grid>
           <Grid item xs={12}>
@@ -170,8 +195,11 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
             <FormControl fullWidth>
               <InputLabel>Categoria</InputLabel>
               <Select
-                value={productData.category}
-                onChange={(e) => setProductData({ ...productData, category: e.target.value })}
+                value={productData.category_id}
+                onChange={(e) =>
+                  setProductData({ ...productData, category_id: Number(e.target.value) })
+                } // Convertendo para número
+                error={!!errors.category_id}
               >
                 {categories.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
@@ -200,9 +228,6 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
                     productData.img_path ? `file://${productData.img_path}` : produtcPlaceholder
                   }
                   alt="Preview"
-                  onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                    ;(e.target as HTMLImageElement).src = produtcPlaceholder
-                  }}
                   sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
                 />
                 <IconButton
@@ -226,8 +251,6 @@ export function AddProduto({ isModalOpen, closeModal }: AddProdutoProps): JSX.El
             </Button>
           </Grid>
         </Grid>
-
-        {/* Exibindo a imagem ou o placeholder */}
       </Box>
     </Modal>
   )
