@@ -6,7 +6,9 @@ import { ICategorie } from './models/ICategorie'
 import { IProduct } from './models/IProduct'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  SelectFile: (): Promise<string> => ipcRenderer.invoke('select-file')
+}
 
 const idatabase = {
   GetDB: (): Promise<{ success: boolean; data: IDatabase; message: string }> =>
@@ -43,7 +45,9 @@ const Categories = {
 
 const Products = {
   getProducts: (): Promise<{ success: boolean; data: IProduct[]; message: string }> =>
-    ipcRenderer.invoke('get-products')
+    ipcRenderer.invoke('get-products'),
+  addProduct: (product: IProduct): Promise<{ success: boolean; message: string }> =>
+    ipcRenderer.invoke('add-product', product)
 }
 
 if (process.contextIsolated) {

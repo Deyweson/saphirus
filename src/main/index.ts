@@ -7,6 +7,7 @@ import { initializeDBConfig } from './services/database/db-services'
 import { LoginScreen } from './services/1-login'
 import { Categories } from './services/2-categories'
 import { Products } from './services/3-Produtos'
+import { SelectFile } from './services/utils/select-file'
 
 function createWindow(): void {
   // Create the browser window.
@@ -18,7 +19,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      webSecurity: false
     }
   })
 
@@ -59,6 +61,7 @@ app.whenReady().then(() => {
   LoginScreen()
   Categories()
   Products()
+  SelectFile()
   createWindow()
 
   app.on('activate', function () {

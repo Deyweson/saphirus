@@ -4,6 +4,10 @@ import { IUser } from './models/IUser'
 import { ICategorie } from './models/ICategorie'
 import { IProduct } from './models/IProduct'
 
+interface IApi {
+  SelectFile: () => Promise<string>
+}
+
 interface idatabase {
   GetDB: () => Promise<{ success: boolean; data: IDatabase; message: string }>
   UpdateDB: (data: IDatabase) => Promise<{ success: boolean; message: string }>
@@ -27,12 +31,13 @@ interface Categories {
 
 interface Products {
   getProducts: () => Promise<{ success: boolean; data: IProduct[]; message: string }>
+  addProduct: (product: IProduct) => Promise<{ success: boolean; message: string }>
 }
 
 declare global {
   interface Window {
     electron: ElectronAPI
-    api: unknown
+    api: IApi
     idatabase: idatabase
     iuser: iuser
     LoginScreen: LoginScreen
