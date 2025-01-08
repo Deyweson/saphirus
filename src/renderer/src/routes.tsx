@@ -1,9 +1,10 @@
 import { Route, Routes } from 'react-router-dom'
+import { LoginPage } from './pages/login'
 
 export function MainRoutes(): JSX.Element {
   return (
     <Routes>
-      <Route path="/" element={<h1>Hello</h1>} />
+      <Route path="/" element={<LoginPage />} />
     </Routes>
   )
 }

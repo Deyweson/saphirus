@@ -1,0 +1,84 @@
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form>img {
+  width: 200px;
+}
+
+.login-form>form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-form>form>input {
+  all: unset;
+  text-align: center;
+  padding-left: 10px;
+  border: 1px solid rgb(158, 158, 158);
+  width: 250px;
+  height: 30px;
+  margin: 10px 0px;
+  border-radius: 5px;
+}
+
+.login-form>form>button {
+  all: unset;
+  margin-top: 20px;
+  background-color: rgb(82, 127, 209);
+  color: white;
+  text-align: center;
+  height: 30px;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.register-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.register-form>form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 50px;
+}
+
+.register-form>form>div {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 10px 0px;
+}
+
+.register-form>form>div>input {
+  all: unset;
+  padding-left: 10px;
+  border: 1px solid rgb(158, 158, 158);
+  width: 250px;
+  height: 30px;
+  margin: 10px 0px;
+  border-radius: 5px;
+}
+
+.register-form>form>button {
+  all: unset;
+  margin-top: 20px;
+  background-color: rgb(82, 127, 209);
+  color: white;
+  text-align: center;
+  height: 30px;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}

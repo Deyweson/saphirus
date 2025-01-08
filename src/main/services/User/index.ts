@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 import { IUser } from '../../../preload/models/IUser'
-import { Login } from '../1-login/login'
+import { Login } from './login'
 import { Register } from './register'
 import { CheckUsers } from './check-user'
 
